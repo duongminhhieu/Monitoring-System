@@ -13,16 +13,16 @@ import java.io.Serializable;
  */
 public class DataSend implements Serializable{
     
-    private File[] roots; // list directory
-    private String path; // path monitoring
-    private int status; // status = 1: thay doi 
-    private String contentChange;
+    private File[] roots;
+    private String path;
+    private int status; // status = 0 : khoi tao ; status = 1: thay doi 
+    private FolderInfo folderInfo;
 
-    public DataSend(File[] roots, String path, int status, String contentChange) {
+    public DataSend(File[] roots, String path, int status, FolderInfo folderInfo) {
         this.roots = roots;
         this.path = path;
         this.status = status;
-        this.contentChange = contentChange;
+        this.folderInfo = folderInfo;
     }
 
     
@@ -49,12 +49,14 @@ public class DataSend implements Serializable{
         this.status = status;
     }
 
-    public String getContentChange() {
-        return contentChange;
+    public FolderInfo getFolderInfo() {
+        return folderInfo;
     }
 
-    public void setContentChange(String contentChange) {
-        this.contentChange = contentChange;
+    public void setFolderInfo(FolderInfo folderInfo) {
+        this.folderInfo = folderInfo;
     }
+
+
     
 }

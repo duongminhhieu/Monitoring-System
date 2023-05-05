@@ -4,10 +4,13 @@
  */
 package Model;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -18,6 +21,7 @@ public class ConnectSocket {
     private String host;
     public static ServerSocket socket;
     public static Socket clientSocket;
+    public static List<Socket> clients = new ArrayList<Socket>();
     public static ObjectOutputStream out;
     public static ObjectInputStream in;
 
@@ -29,22 +33,9 @@ public class ConnectSocket {
         this.host = host;
     }
 
-    public void startServer() {
-        try {
-            socket = new ServerSocket(8080);
-            System.out.println("Server is running.");
-
-            while (true) {
-      
-                clientSocket = socket.accept();
-                out = new ObjectOutputStream(clientSocket.getOutputStream());
-                in = new ObjectInputStream(clientSocket.getInputStream());
-                receiveData();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void startServer() throws IOException {
+        socket = new ServerSocket(8080);
+        System.out.println("Server is running.");
     }
 
     public void sendData(DataSend dataSend) {
@@ -57,36 +48,35 @@ public class ConnectSocket {
 
     }
 
-    public DataSend receiveData() {
+    public DataSend receiveData() throws IOException, ClassNotFoundException {
         DataSend ds = null;
-        try {
-            while (true) {
-                ds = (DataSend) in.readObject();
-                System.out.println(ds.getPath());
+        while (true) {
+            ds = (DataSend) in.readObject();
+            System.out.println(ds.getPath());
 
-                if (ds.getStatus() == -1) {
-                    break;
-                }
-
+            if (ds.getStatus() == -1) {
+                break;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         return ds;
     }
 
-    public void CloseSocket() {
+    public void CloseSocket() throws IOException {
 
-        try {
-            in.close();
-            out.close();
-            socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        in.close();
+        out.close();
+        socket.close();
 
+    }
+
+    public static void removeClient(Socket clientSocket) {
+        ConnectSocket.clients.remove(clientSocket);
+    }
+
+    public static List<Socket> getClients() {
+        return ConnectSocket.clients;
     }
 
 }
