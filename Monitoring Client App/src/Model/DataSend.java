@@ -15,7 +15,7 @@ public class DataSend implements Serializable{
     
     private File[] roots;
     private String path;
-    private int status; // status = 1: thay doi 
+    private int status; // status = 0 : khoi tao ; status = 1: thay doi 
     private FolderInfo folderInfo;
 
     public DataSend(File[] roots, String path, int status, FolderInfo folderInfo) {
