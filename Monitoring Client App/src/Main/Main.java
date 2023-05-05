@@ -6,6 +6,9 @@ package Main;
 
 import Model.ConnectSocket;
 import Model.DataSend;
+import Model.FolderInfo;
+import java.io.File;
+import java.time.LocalDateTime;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,15 +18,25 @@ import javax.swing.JOptionPane;
 public class Main extends javax.swing.JFrame {
 
     public static ConnectSocket connectSocket;
+    public static DataSend dataSend;
+    public static FolderInfo folderInfo;
 
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
-        connectSocket = new ConnectSocket("localhost", 8080);
+        init();
 
+    }
+
+    public void init() {
+        connectSocket = new ConnectSocket("localhost", 8080);
         DisconnectBtn.setVisible(false);
+
+        File[] roots = File.listRoots();
+        dataSend = new DataSend(roots, null, 0, null); // khoi tao data
+      
     }
 
     /**
@@ -102,6 +115,10 @@ public class Main extends javax.swing.JFrame {
             ConnectBtn.setVisible(false);
             DisconnectBtn.setVisible(true);
             JOptionPane.showMessageDialog(this, "Kết nối thành công");
+            
+            // gui data dau tien khi ketnoi
+            connectSocket.sendData(dataSend);
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Kết nối không thành công !",
                     "ERROR", JOptionPane.ERROR_MESSAGE);
