@@ -30,7 +30,8 @@ public class ServerThread extends Thread {
             while (true) {
                 Socket clientSocket = socket.accept();
                 ConnectSocket.clients.add(clientSocket);
-                DashboardForm.listClient.addElement("Client-" + clientSocket.getLocalPort());
+                DashboardForm.listClient.addElement("Client-" + clientSocket.getPort());
+                DashboardForm.updateListClients();
                 System.out.println("Client-" + clientSocket.getPort());
             }
         } catch (Exception e) {

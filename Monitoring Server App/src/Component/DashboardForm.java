@@ -33,6 +33,7 @@ public class DashboardForm extends javax.swing.JPanel {
     public void init() {
         listClient = new Vector<>();
         updateListClients();
+
     }
 
     /**
@@ -224,11 +225,13 @@ public class DashboardForm extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jButton1MouseClicked
 
-    public void updateListClients() {
-        // Khởi tạo JList
-        listClient.addElement("Item 1");
+    public static void updateListClients() {
 
-        jList1.setListData(listClient);
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for (String client : listClient) {
+            model.addElement(client);
+        }
+        jList1.setModel(model);
     }
 
     private void BtnDirectoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDirectoryActionPerformed
@@ -251,7 +254,7 @@ public class DashboardForm extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JList<String> jList1;
+    private static javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
