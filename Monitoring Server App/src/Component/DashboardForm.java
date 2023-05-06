@@ -4,7 +4,8 @@
  */
 package Component;
 
-import Model.ServerThread;
+import Model.ClientHandler;
+import Thread.ServerThread;
 import Model.ConnectSocket;
 import java.net.UnknownHostException;
 import java.util.Vector;
@@ -12,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -78,12 +81,18 @@ public class DashboardForm extends javax.swing.JPanel {
         });
 
         BtnDirectory.setText("Choose Directory");
+        BtnDirectory.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                BtnDirectoryMouseClicked(evt);
+            }
+        });
         BtnDirectory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BtnDirectoryActionPerformed(evt);
             }
         });
 
+        pathText.setEditable(false);
         pathText.setText("path");
         pathText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -118,17 +127,17 @@ public class DashboardForm extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(textIP, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(textIP, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(BtnDirectory)
-                        .addComponent(pathText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(pathText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton1))
                 .addGap(11, 11, 11))
         );
 
@@ -244,7 +253,38 @@ public class DashboardForm extends javax.swing.JPanel {
 
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
         // TODO add your handling code here:
+
+        String selected = jList1.getSelectedValue();
+        String portString = selected.substring(7);
+        System.out.println(portString);
+
+        for (ClientHandler lh : ConnectSocket.listClient) {
+            if (lh.getClient().getPort() == Integer.parseInt(portString)) {
+                if (lh.getDataSend().getPath() != null) {
+                    BtnDirectory.setText("Change Directory");
+                    pathText.setText(lh.getDataSend().getPath());
+                }
+                BtnDirectory.setText("Choose Directory");
+                pathText.setText("path");
+            }
+        }
+
     }//GEN-LAST:event_jList1ValueChanged
+
+    private void BtnDirectoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnDirectoryMouseClicked
+        // TODO add your handling code here:
+
+        String selected = jList1.getSelectedValue();
+
+        if (selected == null) {
+            JOptionPane.showMessageDialog(this, "Bạn chưa chọn Client !");
+        } else {
+            String portString = selected.substring(7);
+            System.out.println(portString);
+
+        }
+
+    }//GEN-LAST:event_BtnDirectoryMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

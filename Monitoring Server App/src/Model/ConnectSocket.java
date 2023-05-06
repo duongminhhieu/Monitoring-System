@@ -5,10 +5,7 @@
 package Model;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +17,7 @@ public class ConnectSocket {
 
     private String host;
     public static ServerSocket socket;
-    public static Socket clientSocket;
-    public static List<Socket> clients = new ArrayList<Socket>();
-    public static ObjectOutputStream out;
-    public static ObjectInputStream in;
+    public static List<ClientHandler> listClient = new ArrayList<ClientHandler>();
 
     public String getHost() {
         return host;
@@ -38,45 +32,13 @@ public class ConnectSocket {
         System.out.println("Server is running.");
     }
 
-    public void sendData(DataSend dataSend) {
-        try {
-            out.writeObject(dataSend);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public DataSend receiveData() throws IOException, ClassNotFoundException {
-        DataSend ds = null;
-        while (true) {
-            ds = (DataSend) in.readObject();
-            System.out.println(ds.getPath());
-
-            if (ds.getStatus() == -1) {
-                break;
-            }
-
-        }
-
-        return ds;
-    }
-
     public void CloseSocket() throws IOException {
-
-        in.close();
-        out.close();
         socket.close();
 
     }
 
-    public static void removeClient(Socket clientSocket) {
-        ConnectSocket.clients.remove(clientSocket);
-    }
-
-    public static List<Socket> getClients() {
-        return ConnectSocket.clients;
+    public static void removeClient(ClientHandler clientSocket) {
+        listClient.remove(clientSocket);
     }
 
 }

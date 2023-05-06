@@ -4,12 +4,8 @@
  */
 package Main;
 
-import Model.ConnectSocket;
-import Model.DataSend;
-import Model.FolderInfo;
-import java.io.File;
-import java.time.LocalDateTime;
-import javax.swing.JOptionPane;
+import Component.FormConnect;
+import javax.swing.JComponent;
 
 /**
  *
@@ -17,26 +13,19 @@ import javax.swing.JOptionPane;
  */
 public class Main extends javax.swing.JFrame {
 
-    public static ConnectSocket connectSocket;
-    public static DataSend dataSend;
-    public static FolderInfo folderInfo;
-
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
-        init();
-
+        setForm(new FormConnect());
     }
 
-    public void init() {
-        connectSocket = new ConnectSocket("localhost", 8080);
-        DisconnectBtn.setVisible(false);
-
-        File[] roots = File.listRoots();
-        dataSend = new DataSend(roots, null, 0, null); // khoi tao data
-      
+    public void setForm(JComponent com) {
+        jPanel1.removeAll();
+        jPanel1.add(com);
+        jPanel1.repaint();
+        jPanel1.revalidate();
     }
 
     /**
@@ -48,96 +37,26 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        ConnectBtn = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        DisconnectBtn = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Client Monitoring");
 
-        ConnectBtn.setText("Connect");
-        ConnectBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ConnectBtnMouseClicked(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Giám sát thư mục ");
-
-        DisconnectBtn.setText("Disconnect");
-        DisconnectBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                DisconnectBtnMouseClicked(evt);
-            }
-        });
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(63, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(ConnectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(102, 102, 102))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(116, Short.MAX_VALUE)
-                    .addComponent(DisconnectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(104, 104, 104)))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(56, 56, 56)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 246, Short.MAX_VALUE)
-                .addComponent(ConnectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(376, Short.MAX_VALUE)
-                    .addComponent(DisconnectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(13, 13, 13)))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void ConnectBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ConnectBtnMouseClicked
-        // TODO add your handling code here:
-        try {
-            connectSocket.connect();
-            ConnectBtn.setVisible(false);
-            DisconnectBtn.setVisible(true);
-            JOptionPane.showMessageDialog(this, "Kết nối thành công");
-            
-            // gui data dau tien khi ketnoi
-            connectSocket.sendData(dataSend);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Kết nối không thành công !",
-                    "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-
-    }//GEN-LAST:event_ConnectBtnMouseClicked
-
-    private void DisconnectBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DisconnectBtnMouseClicked
-        // TODO add your handling code here:
-        try {
-            connectSocket.CloseSocket();
-            ConnectBtn.setVisible(true);
-            DisconnectBtn.setVisible(false);
-            JOptionPane.showMessageDialog(this, "Ngắt kết nối thành công");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Ngắt kết nối không thành công !",
-                    "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_DisconnectBtnMouseClicked
 
     /**
      * @param args the command line arguments
@@ -175,8 +94,6 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton ConnectBtn;
-    private javax.swing.JButton DisconnectBtn;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

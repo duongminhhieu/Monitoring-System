@@ -49,22 +49,8 @@ public class ConnectSocket {
         in = new ObjectInputStream(socket.getInputStream());
     }
 
-    public void sendData(DataSend dataSend) throws IOException {
-        out.writeObject(dataSend);
-    }
-
-    public DataSend receiveData() throws IOException, ClassNotFoundException {
-        DataSend ds = null;
-        ds = (DataSend) in.readObject();
-
-        return ds;
-    }
-
     public void CloseSocket() throws IOException {
-        in.close();
-        out.close();
         socket.close();
-
     }
 
 }
