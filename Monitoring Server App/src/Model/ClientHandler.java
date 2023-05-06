@@ -68,7 +68,7 @@ public class ClientHandler implements Runnable {
                     // khoi tao
                     if (data.getStatus() == 0) {
                         dataSend = data;
-                        System.out.println(data);
+                        //System.out.println(data);
                     }
 
                 }

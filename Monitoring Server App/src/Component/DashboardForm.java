@@ -7,14 +7,15 @@ package Component;
 import Model.ClientHandler;
 import Thread.ServerThread;
 import Model.ConnectSocket;
+import java.io.File;
 import java.net.UnknownHostException;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -24,6 +25,7 @@ public class DashboardForm extends javax.swing.JPanel {
 
     ConnectSocket connectSocket;
     public static Vector<String> listClient;
+    private File[] roots;
 
     /**
      * Creates new form NewJPanel
@@ -48,6 +50,13 @@ public class DashboardForm extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        diaLogDirectory = new javax.swing.JDialog();
+        DirectoryTree = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTree1 = new javax.swing.JTree();
+        jLabel5 = new javax.swing.JLabel();
+        pathChooseDirectory = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -61,6 +70,81 @@ public class DashboardForm extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableLog = new javax.swing.JTable();
+
+        diaLogDirectory.setTitle("Chọn Directory");
+        diaLogDirectory.setMinimumSize(new java.awt.Dimension(800, 500));
+        diaLogDirectory.setModal(true);
+
+        jTree1.addTreeExpansionListener(new javax.swing.event.TreeExpansionListener() {
+            public void treeCollapsed(javax.swing.event.TreeExpansionEvent evt) {
+            }
+            public void treeExpanded(javax.swing.event.TreeExpansionEvent evt) {
+                jTree1TreeExpanded(evt);
+            }
+        });
+        jTree1.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                jTree1ValueChanged(evt);
+            }
+        });
+        jScrollPane3.setViewportView(jTree1);
+
+        javax.swing.GroupLayout DirectoryTreeLayout = new javax.swing.GroupLayout(DirectoryTree);
+        DirectoryTree.setLayout(DirectoryTreeLayout);
+        DirectoryTreeLayout.setHorizontalGroup(
+            DirectoryTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DirectoryTreeLayout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        DirectoryTreeLayout.setVerticalGroup(
+            DirectoryTreeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DirectoryTreeLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jLabel5.setText("Path:");
+
+        pathChooseDirectory.setText("path");
+
+        jButton2.setText("OKE");
+
+        javax.swing.GroupLayout diaLogDirectoryLayout = new javax.swing.GroupLayout(diaLogDirectory.getContentPane());
+        diaLogDirectory.getContentPane().setLayout(diaLogDirectoryLayout);
+        diaLogDirectoryLayout.setHorizontalGroup(
+            diaLogDirectoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(diaLogDirectoryLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(DirectoryTree, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(diaLogDirectoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(diaLogDirectoryLayout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pathChooseDirectory, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE))
+                    .addGroup(diaLogDirectoryLayout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        diaLogDirectoryLayout.setVerticalGroup(
+            diaLogDirectoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(diaLogDirectoryLayout.createSequentialGroup()
+                .addGroup(diaLogDirectoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(diaLogDirectoryLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(DirectoryTree, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(diaLogDirectoryLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(diaLogDirectoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(pathChooseDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -271,6 +355,42 @@ public class DashboardForm extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jList1ValueChanged
 
+    public void updateTreeDirectory(File[] lstRoot) {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Client Computer");
+
+        for (int i = 0; i < lstRoot.length; i++) {
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(lstRoot[i]);
+            root.add(node);
+            addChildren(node, lstRoot[i]);
+            //roots = lstRoot[i];
+        }
+
+        DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+        model.setRoot(root);
+        jTree1.setModel(model);
+        diaLogDirectory.setVisible(true);
+    }
+
+    private void addChildren(DefaultMutableTreeNode node, File file) {
+        File[] files = file.listFiles();
+        if (files == null) {
+            return;
+        }
+        for (File child : files) {
+            if (child.isDirectory()) {
+                DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
+
+                int index = node.getChildCount();
+                
+                childNode.insert(new DefaultMutableTreeNode(), 0);// add a dummy node to allow expanding
+                node.insert(childNode, index);
+                
+                ((DefaultTreeModel) jTree1.getModel()).nodesWereInserted(node, new int[]{index});
+            }
+        }
+
+    }
+
     private void BtnDirectoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnDirectoryMouseClicked
         // TODO add your handling code here:
 
@@ -282,22 +402,84 @@ public class DashboardForm extends javax.swing.JPanel {
             String portString = selected.substring(7);
             System.out.println(portString);
 
+            for (ClientHandler lh : ConnectSocket.listClient) {
+                if (lh.getClient().getPort() == Integer.parseInt(portString)) {
+                    roots = lh.getDataSend().getRoots();
+                    updateTreeDirectory(lh.getDataSend().getRoots());
+                }
+            }
+
         }
 
     }//GEN-LAST:event_BtnDirectoryMouseClicked
 
+    private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
+        // TODO add your handling code here:
+        DefaultMutableTreeNode selectTreeNode = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
+        if(selectTreeNode.getUserObject() != null)
+            pathChooseDirectory.setText(selectTreeNode.getUserObject().toString());
+
+    }//GEN-LAST:event_jTree1ValueChanged
+
+    private File SearchFile(File file, String search) {
+
+        File[] files = file.listFiles();
+
+        if (files != null) {
+            for (File f : files) {
+                if (f.isDirectory() && f.getAbsolutePath().equals(search)) {
+                    return f;
+                }
+                if (f.isDirectory() && search.contains(f.getAbsolutePath())) {
+                    //System.out.println(f.getAbsoluteFile());
+                    return SearchFile(f, search);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private void jTree1TreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jTree1TreeExpanded
+
+        //Lấy nút đang được xổ mở
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) evt.getPath().getLastPathComponent();
+        // Nếu nút chưa được tạo cây con, tạo cây con cho nó
+        if (node.getChildCount() == 1 && node.getChildAt(0) instanceof DefaultMutableTreeNode
+                && ((DefaultMutableTreeNode) node.getChildAt(0)).getUserObject() == null) {
+
+            String nodePathString = node.getUserObject().toString();
+            File file = null;
+            for (File root : roots) {
+                if (nodePathString.contains(root.getAbsolutePath())) {
+                    file = SearchFile(root, nodePathString);
+                }
+            }
+            addChildren(node, file);
+
+        }
+
+    }//GEN-LAST:event_jTree1TreeExpanded
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnDirectory;
+    private javax.swing.JPanel DirectoryTree;
+    private javax.swing.JDialog diaLogDirectory;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private static javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTree jTree1;
+    private javax.swing.JTextField pathChooseDirectory;
     private javax.swing.JTextField pathText;
     private javax.swing.JTable tableLog;
     private javax.swing.JLabel textIP;
