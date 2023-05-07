@@ -107,6 +107,7 @@ public class ClientHandler implements Runnable {
                         }
                     }
                     DashboardForm.updateListClients();
+                    DashboardForm.updateTableLog(null);
                     JOptionPane.showMessageDialog(null, "Client-" + client.getPort() + " disconnected!", "Client ngắt kết nối", JOptionPane.WARNING_MESSAGE);
                     ConnectSocket.removeClient(this);
 

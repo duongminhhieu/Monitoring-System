@@ -42,6 +42,7 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Server Monitoring\n");
+        setPreferredSize(new java.awt.Dimension(1040, 700));
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 

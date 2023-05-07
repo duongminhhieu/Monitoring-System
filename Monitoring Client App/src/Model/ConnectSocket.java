@@ -43,8 +43,7 @@ public class ConnectSocket {
     public void connect() throws IOException {
         socket = new Socket(host, port);
         System.out.println(socket.getPort());
-//        out = new ObjectOutputStream(socket.getOutputStream());
-//        in = new ObjectInputStream(socket.getInputStream());
+
     }
 
     public void CloseSocket() throws IOException {

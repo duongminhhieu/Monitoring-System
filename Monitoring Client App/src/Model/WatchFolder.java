@@ -8,6 +8,7 @@ import Thread.ClientThread;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
@@ -60,7 +61,7 @@ public class WatchFolder implements Runnable {
                     WatchEvent<Path> pathEvent = (WatchEvent<Path>) event;
 
                     Path fileName = pathEvent.context();
-
+                    Path filePath = directory.resolve(fileName);
                     // STEP6: Check type of event.
                     WatchEvent.Kind<?> kind = event.kind();
 
@@ -73,74 +74,97 @@ public class WatchFolder implements Runnable {
                         // Convert the String representation of the date into a LocalDateTime object
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                         LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
-                        
 
-                        FolderInfo folder = new FolderInfo(directory.toAbsolutePath().toString(), 
-                                localDateTime, "Created", "A new file is created : " + fileName);
+                        FolderInfo folder;
+                        // Kiểm tra xem là file hay folder
+                        if (Files.isDirectory(filePath)) {
+                            folder = new FolderInfo(directory.toAbsolutePath().toString(),
+                                    localDateTime, "Created", "A new folder is created : " + fileName);
+                        } else {
+                            folder = new FolderInfo(directory.toAbsolutePath().toString(),
+                                    localDateTime, "Created", "A new file is created : " + fileName);
+                        }
 
                         //update list fodler info monitoring
-                        
                         List<FolderInfo> newListFolder = ClientThread.data.getFolderInfo();
-                        if(newListFolder != null)
+                        if (newListFolder != null) {
                             newListFolder.add(folder);
-                        else {
+                        } else {
                             newListFolder = new ArrayList<>();
                             newListFolder.add(folder);
                         }
                         ClientThread.data.setFolderInfo(newListFolder);
-                        
+
                         ClientThread.sendDataToServer();
                     }
 
-//                    if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
-//
-//                        System.out.println("A file has been deleted: " + fileName);
-//                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//                        Date date = new Date();
-//
-//                        Object[] obj = new Object[]{ClientHandler.jobsModel.getRowCount() + 1,
-//                            ClientHandler.pathDirectory,
-//                            dateFormat.format(date), "Deleted",
-//                            ClientHandler.nameClient,
-//                            "A file has been deleted : " + fileName};
-//
-//                        String data = "{" + (ClientHandler.jobsModel.getRowCount() + 1) + ","
-//                                + ClientHandler.pathDirectory + ","
-//                                + dateFormat.format(date).toString() + "," + "Deleted" + ","
-//                                + ClientHandler.nameClient + ","
-//                                + "A file has been deleted : " + fileName + "}";
-//
-//                        ClientHandler.jobsModel.addRow(obj);
-//                        ClientHandler.jtable.setModel(ClientHandler.jobsModel);
-//                        WriteFile wr = new WriteFile();
-//                        wr.writeFile(String.valueOf(data), ClientHandler.pathDirectory, ClientHandler.nameClient);
-//                        new ClientSend(s, ClientHandler.nameClient, "11", "A file has been deleted : " + fileName,
-//                                ClientHandler.pathDirectory);
-//                    }
-//                    if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
-//
-//                        System.out.println("A file has been modified: " + fileName);
-//                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//                        Date date = new Date();
-//                        Object[] obj = new Object[]{ClientHandler.jobsModel.getRowCount() + 1,
-//                            ClientHandler.pathDirectory,
-//                            dateFormat.format(date), "Modified",
-//                            ClientHandler.nameClient,
-//                            "A file has been modified : " + fileName};
-//
-//                        String data = "{" + (ClientHandler.jobsModel.getRowCount() + 1) + ","
-//                                + ClientHandler.pathDirectory + ","
-//                                + dateFormat.format(date).toString() + "," + "Modified" + ","
-//                                + ClientHandler.nameClient + ","
-//                                + "A file has been modified : " + fileName + "}";
-//
-//                        ClientHandler.jobsModel.addRow(obj);
-//                        ClientHandler.jtable.setModel(ClientHandler.jobsModel);
-//                        WriteFile wr = new WriteFile();
-//                        wr.writeFile(String.valueOf(data), ClientHandler.pathDirectory, ClientHandler.nameClient);
-//                        new ClientSend(s, ClientHandler.nameClient, "12", "A file has been modified : " + fileName,
-//                                ClientHandler.pathDirectory);
-//                    }
+                    if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
+
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        Date date = new Date();
+                        String dateString = dateFormat.format(date);
+
+                        // Convert the String representation of the date into a LocalDateTime object
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                        LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+
+                        FolderInfo folder;
+                        // Kiểm tra xem là file hay folder
+                        if (Files.isDirectory(filePath)) {
+                            folder = new FolderInfo(directory.toAbsolutePath().toString(),
+                                    localDateTime, "Deleted", "A folder has been deleted : " + fileName);
+                        } else {
+                            folder = new FolderInfo(directory.toAbsolutePath().toString(),
+                                    localDateTime, "Deleted", "A file has been deleted : " + fileName);
+                        }
+
+                        //update list fodler info monitoring
+                        List<FolderInfo> newListFolder = ClientThread.data.getFolderInfo();
+                        if (newListFolder != null) {
+                            newListFolder.add(folder);
+                        } else {
+                            newListFolder = new ArrayList<>();
+                            newListFolder.add(folder);
+                        }
+                        ClientThread.data.setFolderInfo(newListFolder);
+
+                        ClientThread.sendDataToServer();
+                    }
+
+                    // sua file
+                    if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        Date date = new Date();
+                        String dateString = dateFormat.format(date);
+
+                        // Convert the String representation of the date into a LocalDateTime object
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                        LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+
+                        FolderInfo folder;
+                        // Kiểm tra xem là file hay folder
+                        if (Files.isDirectory(filePath)) {
+                            folder = new FolderInfo(directory.toAbsolutePath().toString(),
+                                    localDateTime, "Modified", "A folder has been modified : " + fileName);
+                        } else {
+                            folder = new FolderInfo(directory.toAbsolutePath().toString(),
+                                    localDateTime, "Modified", "A file has been modified : " + fileName);
+                        }
+
+                        //update list fodler info monitoring
+                        List<FolderInfo> newListFolder = ClientThread.data.getFolderInfo();
+                        if (newListFolder != null) {
+                            newListFolder.add(folder);
+                        } else {
+                            newListFolder = new ArrayList<>();
+                            newListFolder.add(folder);
+                        }
+                        ClientThread.data.setFolderInfo(newListFolder);
+
+                        ClientThread.sendDataToServer();
+
+                    }
                 }
 
                 // STEP8: Reset the watch key everytime for continuing to use it for further

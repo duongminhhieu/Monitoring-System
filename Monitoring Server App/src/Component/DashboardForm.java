@@ -162,6 +162,8 @@ public class DashboardForm extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        setPreferredSize(new java.awt.Dimension(1000, 640));
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Monitoring System");
@@ -212,7 +214,7 @@ public class DashboardForm extends javax.swing.JPanel {
                         .addGap(26, 26, 26)
                         .addComponent(BtnDirectory)
                         .addGap(18, 18, 18)
-                        .addComponent(pathText, javax.swing.GroupLayout.DEFAULT_SIZE, 562, Short.MAX_VALUE)
+                        .addComponent(pathText)
                         .addGap(52, 52, 52))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -260,7 +262,7 @@ public class DashboardForm extends javax.swing.JPanel {
                 {null, null, null, null, null}
             },
             new String [] {
-                "STT", "Directory", "Time", "Action", "Description"
+                "STT", "Time", "Action", "Directory", "Description"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -271,27 +273,35 @@ public class DashboardForm extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        tableLog.setRowHeight(25);
         jScrollPane1.setViewportView(tableLog);
+        if (tableLog.getColumnModel().getColumnCount() > 0) {
+            tableLog.getColumnModel().getColumn(0).setMaxWidth(50);
+            tableLog.getColumnModel().getColumn(1).setPreferredWidth(160);
+            tableLog.getColumnModel().getColumn(2).setPreferredWidth(200);
+            tableLog.getColumnModel().getColumn(3).setMinWidth(250);
+            tableLog.getColumnModel().getColumn(4).setMinWidth(280);
+        }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(707, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(298, 298, 298))
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+                .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(17, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(298, 298, 298))
+                        .addComponent(jScrollPane1)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -344,15 +354,16 @@ public class DashboardForm extends javax.swing.JPanel {
     }
 
     public static void updateTableLog(List<FolderInfo> list) {
-
+        DefaultTableModel dtm = (DefaultTableModel) tableLog.getModel();
+        dtm.setRowCount(0);
         if (list != null) {
-            DefaultTableModel dtm = (DefaultTableModel) tableLog.getModel();
-            dtm.setRowCount(0);
+
             // duyet danh sach
             for (int i = 0; i < list.size(); i++) {
-                dtm.addRow(new Object[]{i, list.get(i).getPath(), 
-                    list.get(i).getTime(), 
-                    list.get(i).getAction(), 
+                dtm.addRow(new Object[]{i + 1,
+                    list.get(i).getTime(),
+                    list.get(i).getAction(),
+                    list.get(i).getPath(),
                     list.get(i).getDescription()});
             }
 
@@ -385,6 +396,8 @@ public class DashboardForm extends javax.swing.JPanel {
                 } else {
                     BtnDirectory.setText("Choose Directory");
                     pathText.setText("path");
+                    updateTableLog(null);
+
                 }
 
             }
@@ -506,7 +519,7 @@ public class DashboardForm extends javax.swing.JPanel {
             if (ConnectSocket.listClient.get(i).getClient().getPort() == clientHandler.getClient().getPort()) {
                 ConnectSocket.listClient.set(i, clientHandler);
                 System.out.println(clientHandler.getDataSend().getPath());
-                
+
                 // send to client
                 ConnectSocket.listClient.get(i).sendDataToClient();
                 break;
