@@ -44,12 +44,6 @@ public class ServerThread extends Thread {
                 DashboardForm.listClient.addElement("Client-" + clientSocket.getPort());
                 DashboardForm.updateListClients();
 
-
-//                DataSend d = new DataSend(null, "hello", 1, null);
-//                ClientHandler clientHandler = ConnectSocket.listClient.get(ConnectSocket.listClient.size() - 1);
-//                clientHandler.getOut().writeObject(d);
-//                clientHandler.getOut().flush();
-                // tao thread xu li cho 1 client
                 new Thread(ConnectSocket.listClient.get(ConnectSocket.listClient.size() - 1)).start();
 
             }

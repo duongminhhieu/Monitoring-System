@@ -58,6 +58,14 @@ public class ClientHandler implements Runnable {
         this.dataSend = dataSend;
     }
 
+    public void sendDataToClient() throws IOException {
+        out = new ObjectOutputStream(client.getOutputStream());
+        out.writeObject(this.dataSend);
+        out.flush();
+        System.out.println(this.dataSend.getPath());
+        System.out.println("send successfully");
+    }
+
     @Override
     public void run() {
 
@@ -66,12 +74,18 @@ public class ClientHandler implements Runnable {
             try {
 
                 while (true) {
+                    
+                    in = new ObjectInputStream(client.getInputStream());
+                    
                     DataSend data = (DataSend) in.readObject();
 
                     // khoi tao
                     if (data.getStatus() == 0) {
                         dataSend = data;
-                        //System.out.println(data);
+                        if (data.getFolderInfo() != null) {
+                            System.out.println(data.getFolderInfo().size());
+                            DashboardForm.updateTableLog(data.getFolderInfo());
+                        }
                     }
 
                 }
@@ -93,7 +107,7 @@ public class ClientHandler implements Runnable {
                         }
                     }
                     DashboardForm.updateListClients();
-                    JOptionPane.showMessageDialog(null, "Client-" + client.getPort() + " disconnected!","Client ngắt kết nối", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Client-" + client.getPort() + " disconnected!", "Client ngắt kết nối", JOptionPane.WARNING_MESSAGE);
                     ConnectSocket.removeClient(this);
 
                 } catch (IOException ex) {
@@ -104,12 +118,6 @@ public class ClientHandler implements Runnable {
 
         });
         reciveThread.start();
-
-        // Tạo một luồng để gửi các phản hồi cho client một cách không đồng bộ
-        Thread sendThread = new Thread(() -> {
-
-        });
-        sendThread.start();
 
     }
 

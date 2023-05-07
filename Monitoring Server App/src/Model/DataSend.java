@@ -6,6 +6,7 @@ package Model;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -16,9 +17,9 @@ public class DataSend implements Serializable{
     private File[] roots;
     private String path;
     private int status; // status = 0 : khoi tao ; status = 1: thay doi 
-    private FolderInfo folderInfo;
+    private List<FolderInfo> folderInfo;
 
-    public DataSend(File[] roots, String path, int status, FolderInfo folderInfo) {
+    public DataSend(File[] roots, String path, int status, List<FolderInfo> folderInfo) {
         this.roots = roots;
         this.path = path;
         this.status = status;
@@ -49,11 +50,11 @@ public class DataSend implements Serializable{
         this.status = status;
     }
 
-    public FolderInfo getFolderInfo() {
+    public List<FolderInfo> getFolderInfo() {
         return folderInfo;
     }
 
-    public void setFolderInfo(FolderInfo folderInfo) {
+    public void setFolderInfo(List<FolderInfo> folderInfo) {
         this.folderInfo = folderInfo;
     }
 

@@ -21,7 +21,6 @@ import javax.swing.Timer;
 public class FormConnect extends javax.swing.JPanel {
 
     public static ConnectSocket connectSocket;
-    public static DataSend dataSend;
     public static FolderInfo folderInfo;
     public ClientThread clientThread;
 
@@ -35,10 +34,6 @@ public class FormConnect extends javax.swing.JPanel {
 
     public void init() {
         DisconnectBtn.setVisible(false);
-
-        File[] roots = File.listRoots();
-        dataSend = new DataSend(roots, null, 0, null); // khoi tao data
-
     }
 
     /**
@@ -136,9 +131,11 @@ public class FormConnect extends javax.swing.JPanel {
         // TODO add your handling code here:
         try {
             connectSocket = new ConnectSocket("localhost", 8080);
+            connectSocket.connect();
             clientThread = new ClientThread(connectSocket);
             clientThread.start();
-            clientThread.join();
+            
+            clientThread.sendDataToServer();
             
             if (ConnectSocket.socket != null) {
                 ConnectBtn.setVisible(false);
@@ -152,7 +149,7 @@ public class FormConnect extends javax.swing.JPanel {
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Kết nối không thành công !",
+            JOptionPane.showMessageDialog(this, "Kết nối không thành công !\nCó thể Server chưa được bật !!",
                     "ERROR", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_ConnectBtnMouseClicked

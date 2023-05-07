@@ -6,8 +6,11 @@ package Thread;
 
 import Model.ConnectSocket;
 import Model.DataSend;
+import Model.WatchFolder;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,10 +21,14 @@ import java.util.logging.Logger;
 public class ClientThread extends Thread {
 
     private ConnectSocket connectSocket;
-    private DataSend data;
+    public static DataSend data;
+    public static ObjectOutputStream out;
+    public static ObjectInputStream in;
 
-    public ClientThread(ConnectSocket connectSocket) {
+    public ClientThread(ConnectSocket connectSocket) throws IOException {
         this.connectSocket = connectSocket;
+        this.out = new ObjectOutputStream(ConnectSocket.socket.getOutputStream());
+        this.in = new ObjectInputStream(ConnectSocket.socket.getInputStream());
         initData();
     }
 
@@ -32,7 +39,7 @@ public class ClientThread extends Thread {
     public void setData(DataSend data) {
         this.data = data;
     }
-   
+
     public ConnectSocket getConnectSocket() {
         return connectSocket;
     }
@@ -40,43 +47,48 @@ public class ClientThread extends Thread {
     public void setConnectSocket(ConnectSocket connectSocket) {
         this.connectSocket = connectSocket;
     }
-    
-    public void initData(){
+
+    public void initData() {
         File[] roots = File.listRoots();
         data = new DataSend(roots, null, 0, null);
     }
 
+    public static void sendDataToServer() throws IOException {
+        out = new ObjectOutputStream(ConnectSocket.socket.getOutputStream());
+        out.writeObject(ClientThread.data);
+        out.flush();
+    }
+
     @Override
     public void run() {
+        //connectSocket.connect();
+
         try {
-            System.out.println(123);
-            connectSocket.connect();
-            Thread reciveThread = new Thread(() -> {
-                try {
-                    DataSend dataSend = (DataSend) ConnectSocket.in.readObject();
-                    System.out.println(dataSend.getPath());
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+            while (true) {
+                in = new ObjectInputStream(ConnectSocket.socket.getInputStream());
+                DataSend dataSend = (DataSend) in.readObject();
+                this.data = dataSend;
+                if (dataSend.getPath() != null) {
+                    WatchFolder watchFolder = new WatchFolder(ConnectSocket.socket);
+                    new Thread(watchFolder).start();
                 }
 
-            });
-            reciveThread.start();
+            }
 
-            // Tạo một luồng để gửi các phản hồi cho client một cách không đồng bộ
-            Thread sendThread = new Thread(() -> {
-                try {
-                    while (true) {
-                      ConnectSocket.out.writeObject(data);
-                      ConnectSocket.out.flush();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            sendThread.start();
+        } catch (Exception e) {
+            e.printStackTrace();
 
-        } catch (IOException ex) {
-            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                in.close();
+                out.close();
+                ConnectSocket.socket.close();
+                System.out.println("Server" + " disconnected!");
+
+            } catch (IOException ex) {
+                Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
         }
     }
 

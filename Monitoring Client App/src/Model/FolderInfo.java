@@ -4,13 +4,14 @@
  */
 package Model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  *
  * @author ASUS
  */
-public class FolderInfo {
+public class FolderInfo implements Serializable{
 
     private String path;
     private LocalDateTime time;

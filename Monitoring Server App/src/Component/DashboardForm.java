@@ -7,13 +7,17 @@ package Component;
 import Model.ClientHandler;
 import Thread.ServerThread;
 import Model.ConnectSocket;
+import Model.FolderInfo;
 import java.io.File;
+import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -339,6 +343,21 @@ public class DashboardForm extends javax.swing.JPanel {
         jList1.setModel(model);
     }
 
+    public static void updateTableLog(List<FolderInfo> list) {
+
+        if (list != null) {
+            DefaultTableModel dtm = (DefaultTableModel) tableLog.getModel();
+            dtm.setRowCount(0);
+            // duyet danh sach
+            for (int i = 0; i < list.size(); i++) {
+                dtm.addRow(new Object[]{i, list.get(i).getPath(), 
+                    list.get(i).getTime(), 
+                    list.get(i).getAction(), 
+                    list.get(i).getDescription()});
+            }
+
+        }
+    }
     private void BtnDirectoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDirectoryActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_BtnDirectoryActionPerformed
@@ -347,11 +366,7 @@ public class DashboardForm extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_pathTextActionPerformed
 
-    
-    private void updateTableMonitoring(){
-        return;
-    }
-    
+
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
         // TODO add your handling code here:
 
@@ -364,9 +379,9 @@ public class DashboardForm extends javax.swing.JPanel {
                 if (lh.getDataSend() != null && lh.getDataSend().getPath() != null) {
                     BtnDirectory.setText("Change Directory");
                     pathText.setText(lh.getDataSend().getPath());
-                    
-                    updateTableMonitoring();
-                    
+
+                    updateTableLog(lh.getDataSend().getFolderInfo());
+
                 } else {
                     BtnDirectory.setText("Choose Directory");
                     pathText.setText("path");
@@ -486,10 +501,14 @@ public class DashboardForm extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jTree1TreeExpanded
 
-    private void updateClientHandler(ClientHandler clientHandler) {
+    private void updateClientHandler(ClientHandler clientHandler) throws IOException {
         for (int i = 0; i < ConnectSocket.listClient.size(); i++) {
             if (ConnectSocket.listClient.get(i).getClient().getPort() == clientHandler.getClient().getPort()) {
                 ConnectSocket.listClient.set(i, clientHandler);
+                System.out.println(clientHandler.getDataSend().getPath());
+                
+                // send to client
+                ConnectSocket.listClient.get(i).sendDataToClient();
                 break;
             }
         }
@@ -501,9 +520,13 @@ public class DashboardForm extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Bạn chưa chọn thư mục !");
         } else {
             pathText.setText(pathChooseDirectory.getText());
+            currentClientHandler.getDataSend().setPath(pathChooseDirectory.getText());
             diaLogDirectory.setVisible(false);
-            currentClientHandler.getDataSend().setPath(pathText.getText());
-            updateClientHandler(currentClientHandler);
+            try {
+                updateClientHandler(currentClientHandler);
+            } catch (IOException ex) {
+                Logger.getLogger(DashboardForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }//GEN-LAST:event_selectDirectoryBtnMouseClicked
@@ -532,7 +555,7 @@ public class DashboardForm extends javax.swing.JPanel {
     private javax.swing.JTextField pathChooseDirectory;
     private javax.swing.JTextField pathText;
     private javax.swing.JButton selectDirectoryBtn;
-    private javax.swing.JTable tableLog;
+    private static javax.swing.JTable tableLog;
     private javax.swing.JLabel textIP;
     // End of variables declaration//GEN-END:variables
 }
