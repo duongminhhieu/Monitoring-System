@@ -347,6 +347,11 @@ public class DashboardForm extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_pathTextActionPerformed
 
+    
+    private void updateTableMonitoring(){
+        return;
+    }
+    
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
         // TODO add your handling code here:
 
@@ -359,6 +364,9 @@ public class DashboardForm extends javax.swing.JPanel {
                 if (lh.getDataSend() != null && lh.getDataSend().getPath() != null) {
                     BtnDirectory.setText("Change Directory");
                     pathText.setText(lh.getDataSend().getPath());
+                    
+                    updateTableMonitoring();
+                    
                 } else {
                     BtnDirectory.setText("Choose Directory");
                     pathText.setText("path");

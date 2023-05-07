@@ -9,7 +9,10 @@ import Model.DataSend;
 import Model.FolderInfo;
 import Thread.ClientThread;
 import java.io.File;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  *
@@ -132,16 +135,21 @@ public class FormConnect extends javax.swing.JPanel {
     private void ConnectBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ConnectBtnMouseClicked
         // TODO add your handling code here:
         try {
-
             connectSocket = new ConnectSocket("localhost", 8080);
             clientThread = new ClientThread(connectSocket);
             clientThread.start();
-
-            ConnectBtn.setVisible(false);
-            DisconnectBtn.setVisible(true);
-            JOptionPane.showMessageDialog(this, "Kết nối thành công");
-            portClientText.setText(Integer.toString(ConnectSocket.socket.getLocalPort()));
-            portServerText.setText("8080");
+            clientThread.join();
+            
+            if (ConnectSocket.socket != null) {
+                ConnectBtn.setVisible(false);
+                DisconnectBtn.setVisible(true);
+                portClientText.setText(Integer.toString(ConnectSocket.socket.getLocalPort()));
+                portServerText.setText("8080");
+                JOptionPane.showMessageDialog(this, "Kết nối thành công");
+            } else {
+                JOptionPane.showMessageDialog(this, "Kết nối không thành công !\nCó thể Server chưa được bật !!",
+                        "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Kết nối không thành công !",
@@ -153,7 +161,7 @@ public class FormConnect extends javax.swing.JPanel {
         // TODO add your handling code here:
         try {
 
-            clientThread.getConnectSocket().CloseSocket();
+            ConnectSocket.socket.close();
             ConnectBtn.setVisible(true);
             DisconnectBtn.setVisible(false);
             JOptionPane.showMessageDialog(this, "Ngắt kết nối thành công");

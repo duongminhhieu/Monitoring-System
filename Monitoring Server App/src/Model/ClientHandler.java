@@ -4,10 +4,14 @@
  */
 package Model;
 
+import Component.DashboardForm;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,7 +23,7 @@ public class ClientHandler implements Runnable {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private DataSend dataSend;
-    
+
     public ClientHandler(Socket client) throws IOException {
         this.client = client;
         this.out = new ObjectOutputStream(client.getOutputStream());
@@ -53,7 +57,6 @@ public class ClientHandler implements Runnable {
     public void setDataSend(DataSend dataSend) {
         this.dataSend = dataSend;
     }
-    
 
     @Override
     public void run() {
@@ -75,6 +78,28 @@ public class ClientHandler implements Runnable {
 
             } catch (Exception e) {
                 e.printStackTrace();
+
+                try {
+                    in.close();
+                    out.close();
+                    client.close();
+                    System.out.println("Client-" + client.getPort() + " disconnected!");
+
+                    // xoa client trong list giao dien
+                    for (int i = 0; i < DashboardForm.listClient.size(); i++) {
+                        if (DashboardForm.listClient.get(i).equals("Client-" + client.getPort())) {
+                            DashboardForm.listClient.remove(i);
+                            break;
+                        }
+                    }
+                    DashboardForm.updateListClients();
+                    JOptionPane.showMessageDialog(null, "Client-" + client.getPort() + " disconnected!","Client ngắt kết nối", JOptionPane.WARNING_MESSAGE);
+                    ConnectSocket.removeClient(this);
+
+                } catch (IOException ex) {
+                    Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             }
 
         });

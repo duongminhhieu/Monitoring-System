@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -33,20 +34,21 @@ public class ServerThread extends Thread {
 
             // lang nghe cac clients
             while (true) {
-                
+
                 // accept, add thread to list
                 Socket clientSocket = socket.accept();
+
                 ConnectSocket.listClient.add(new ClientHandler(clientSocket));
 
                 // Update UI
                 DashboardForm.listClient.addElement("Client-" + clientSocket.getPort());
                 DashboardForm.updateListClients();
 
+
 //                DataSend d = new DataSend(null, "hello", 1, null);
 //                ClientHandler clientHandler = ConnectSocket.listClient.get(ConnectSocket.listClient.size() - 1);
 //                clientHandler.getOut().writeObject(d);
 //                clientHandler.getOut().flush();
-
                 // tao thread xu li cho 1 client
                 new Thread(ConnectSocket.listClient.get(ConnectSocket.listClient.size() - 1)).start();
 
