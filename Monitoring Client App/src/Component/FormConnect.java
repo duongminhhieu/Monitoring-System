@@ -50,6 +50,10 @@ public class FormConnect extends javax.swing.JPanel {
         ConnectBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         DisconnectBtn = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        portClientText = new javax.swing.JTextField();
+        portServerText = new javax.swing.JTextField();
 
         ConnectBtn.setText("Connect");
         ConnectBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -69,6 +73,16 @@ public class FormConnect extends javax.swing.JPanel {
             }
         });
 
+        jLabel2.setText("Port Client: ");
+
+        jLabel3.setText("Port Server: ");
+
+        portClientText.setEditable(false);
+        portClientText.setText("Port Client");
+
+        portServerText.setEditable(false);
+        portServerText.setText("Port Server");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -81,16 +95,33 @@ public class FormConnect extends javax.swing.JPanel {
                             .addComponent(DisconnectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(ConnectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(52, Short.MAX_VALUE))
+                        .addGap(58, 58, 58)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(85, 85, 85)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(portClientText)
+                            .addComponent(portServerText, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE))))
+                .addContainerGap(77, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 189, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(portClientText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(portServerText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DisconnectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ConnectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -109,6 +140,8 @@ public class FormConnect extends javax.swing.JPanel {
             ConnectBtn.setVisible(false);
             DisconnectBtn.setVisible(true);
             JOptionPane.showMessageDialog(this, "Kết nối thành công");
+            portClientText.setText(Integer.toString(ConnectSocket.socket.getLocalPort()));
+            portServerText.setText("8080");
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Kết nối không thành công !",
@@ -124,6 +157,8 @@ public class FormConnect extends javax.swing.JPanel {
             ConnectBtn.setVisible(true);
             DisconnectBtn.setVisible(false);
             JOptionPane.showMessageDialog(this, "Ngắt kết nối thành công");
+            portClientText.setText("Port Client");
+            portServerText.setText("8080");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Ngắt kết nối không thành công !",
                     "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -136,5 +171,9 @@ public class FormConnect extends javax.swing.JPanel {
     private javax.swing.JButton ConnectBtn;
     private javax.swing.JButton DisconnectBtn;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JTextField portClientText;
+    private javax.swing.JTextField portServerText;
     // End of variables declaration//GEN-END:variables
 }

@@ -27,6 +27,8 @@ public class DashboardForm extends javax.swing.JPanel {
     public static Vector<String> listClient;
     private File[] roots;
 
+    private ClientHandler currentClientHandler;
+
     /**
      * Creates new form NewJPanel
      */
@@ -56,7 +58,7 @@ public class DashboardForm extends javax.swing.JPanel {
         jTree1 = new javax.swing.JTree();
         jLabel5 = new javax.swing.JLabel();
         pathChooseDirectory = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        selectDirectoryBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -109,7 +111,17 @@ public class DashboardForm extends javax.swing.JPanel {
 
         pathChooseDirectory.setText("path");
 
-        jButton2.setText("OKE");
+        selectDirectoryBtn.setText("Chọn");
+        selectDirectoryBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                selectDirectoryBtnMouseClicked(evt);
+            }
+        });
+        selectDirectoryBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectDirectoryBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout diaLogDirectoryLayout = new javax.swing.GroupLayout(diaLogDirectory.getContentPane());
         diaLogDirectory.getContentPane().setLayout(diaLogDirectoryLayout);
@@ -125,7 +137,7 @@ public class DashboardForm extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(pathChooseDirectory, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE))
                     .addGroup(diaLogDirectoryLayout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addComponent(selectDirectoryBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -142,7 +154,7 @@ public class DashboardForm extends javax.swing.JPanel {
                             .addComponent(jLabel5)
                             .addComponent(pathChooseDirectory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2)))
+                        .addComponent(selectDirectoryBtn)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -344,12 +356,14 @@ public class DashboardForm extends javax.swing.JPanel {
 
         for (ClientHandler lh : ConnectSocket.listClient) {
             if (lh.getClient().getPort() == Integer.parseInt(portString)) {
-                if (lh.getDataSend().getPath() != null) {
+                if (lh.getDataSend() != null && lh.getDataSend().getPath() != null) {
                     BtnDirectory.setText("Change Directory");
                     pathText.setText(lh.getDataSend().getPath());
+                } else {
+                    BtnDirectory.setText("Choose Directory");
+                    pathText.setText("path");
                 }
-                BtnDirectory.setText("Choose Directory");
-                pathText.setText("path");
+
             }
         }
 
@@ -368,6 +382,7 @@ public class DashboardForm extends javax.swing.JPanel {
         DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
         model.setRoot(root);
         jTree1.setModel(model);
+        pathChooseDirectory.setText("path");
         diaLogDirectory.setVisible(true);
     }
 
@@ -381,10 +396,10 @@ public class DashboardForm extends javax.swing.JPanel {
                 DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
 
                 int index = node.getChildCount();
-                
+
                 childNode.insert(new DefaultMutableTreeNode(), 0);// add a dummy node to allow expanding
                 node.insert(childNode, index);
-                
+
                 ((DefaultTreeModel) jTree1.getModel()).nodesWereInserted(node, new int[]{index});
             }
         }
@@ -404,6 +419,7 @@ public class DashboardForm extends javax.swing.JPanel {
 
             for (ClientHandler lh : ConnectSocket.listClient) {
                 if (lh.getClient().getPort() == Integer.parseInt(portString)) {
+                    currentClientHandler = lh;
                     roots = lh.getDataSend().getRoots();
                     updateTreeDirectory(lh.getDataSend().getRoots());
                 }
@@ -416,8 +432,9 @@ public class DashboardForm extends javax.swing.JPanel {
     private void jTree1ValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jTree1ValueChanged
         // TODO add your handling code here:
         DefaultMutableTreeNode selectTreeNode = (DefaultMutableTreeNode) jTree1.getLastSelectedPathComponent();
-        if(selectTreeNode.getUserObject() != null)
+        if (selectTreeNode != null) {
             pathChooseDirectory.setText(selectTreeNode.getUserObject().toString());
+        }
 
     }//GEN-LAST:event_jTree1ValueChanged
 
@@ -461,13 +478,38 @@ public class DashboardForm extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jTree1TreeExpanded
 
+    private void updateClientHandler(ClientHandler clientHandler) {
+        for (int i = 0; i < ConnectSocket.listClient.size(); i++) {
+            if (ConnectSocket.listClient.get(i).getClient().getPort() == clientHandler.getClient().getPort()) {
+                ConnectSocket.listClient.set(i, clientHandler);
+                break;
+            }
+        }
+    }
+
+    private void selectDirectoryBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_selectDirectoryBtnMouseClicked
+
+        if (pathChooseDirectory.getText().equals("path")) {
+            JOptionPane.showMessageDialog(this, "Bạn chưa chọn thư mục !");
+        } else {
+            pathText.setText(pathChooseDirectory.getText());
+            diaLogDirectory.setVisible(false);
+            currentClientHandler.getDataSend().setPath(pathText.getText());
+            updateClientHandler(currentClientHandler);
+        }
+
+    }//GEN-LAST:event_selectDirectoryBtnMouseClicked
+
+    private void selectDirectoryBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectDirectoryBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_selectDirectoryBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnDirectory;
     private javax.swing.JPanel DirectoryTree;
     private javax.swing.JDialog diaLogDirectory;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -481,6 +523,7 @@ public class DashboardForm extends javax.swing.JPanel {
     private javax.swing.JTree jTree1;
     private javax.swing.JTextField pathChooseDirectory;
     private javax.swing.JTextField pathText;
+    private javax.swing.JButton selectDirectoryBtn;
     private javax.swing.JTable tableLog;
     private javax.swing.JLabel textIP;
     // End of variables declaration//GEN-END:variables
