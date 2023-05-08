@@ -28,7 +28,6 @@ import javax.swing.tree.DefaultTreeModel;
 public class DashboardForm extends javax.swing.JPanel {
 
     ConnectSocket connectSocket;
-    public static Vector<String> listClient;
     private File[] roots;
 
     private ClientHandler currentClientHandler;
@@ -42,7 +41,6 @@ public class DashboardForm extends javax.swing.JPanel {
     }
 
     public void init() {
-        listClient = new Vector<>();
         updateListClients();
 
     }
@@ -113,6 +111,7 @@ public class DashboardForm extends javax.swing.JPanel {
 
         jLabel5.setText("Path:");
 
+        pathChooseDirectory.setEditable(false);
         pathChooseDirectory.setText("path");
 
         selectDirectoryBtn.setText("Chọn");
@@ -277,10 +276,14 @@ public class DashboardForm extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tableLog);
         if (tableLog.getColumnModel().getColumnCount() > 0) {
             tableLog.getColumnModel().getColumn(0).setMaxWidth(50);
+            tableLog.getColumnModel().getColumn(1).setMinWidth(160);
             tableLog.getColumnModel().getColumn(1).setPreferredWidth(160);
-            tableLog.getColumnModel().getColumn(2).setPreferredWidth(200);
+            tableLog.getColumnModel().getColumn(2).setMinWidth(80);
+            tableLog.getColumnModel().getColumn(2).setPreferredWidth(80);
             tableLog.getColumnModel().getColumn(3).setMinWidth(250);
-            tableLog.getColumnModel().getColumn(4).setMinWidth(280);
+            tableLog.getColumnModel().getColumn(3).setPreferredWidth(250);
+            tableLog.getColumnModel().getColumn(4).setMinWidth(300);
+            tableLog.getColumnModel().getColumn(4).setPreferredWidth(300);
         }
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -347,8 +350,8 @@ public class DashboardForm extends javax.swing.JPanel {
     public static void updateListClients() {
 
         DefaultListModel<String> model = new DefaultListModel<>();
-        for (String client : listClient) {
-            model.addElement(client);
+        for (ClientHandler client : ConnectSocket.listClient) {
+            model.addElement("Client-" + client.getClient().getPort());
         }
         jList1.setModel(model);
     }
@@ -382,26 +385,30 @@ public class DashboardForm extends javax.swing.JPanel {
         // TODO add your handling code here:
 
         String selected = jList1.getSelectedValue();
-        String portString = selected.substring(7);
-        System.out.println(portString);
 
-        for (ClientHandler lh : ConnectSocket.listClient) {
-            if (lh.getClient().getPort() == Integer.parseInt(portString)) {
-                if (lh.getDataSend() != null && lh.getDataSend().getPath() != null) {
-                    BtnDirectory.setText("Change Directory");
-                    pathText.setText(lh.getDataSend().getPath());
+        if (selected != null) {
+            String portString = selected.substring(7);
+            System.out.println(portString);
 
-                    updateTableLog(lh.getDataSend().getFolderInfo());
+            for (ClientHandler lh : ConnectSocket.listClient) {
+                if (lh.getClient().getPort() == Integer.parseInt(portString)) {
+                    if (lh.getDataSend() != null && lh.getDataSend().getPath() != null) {
+                        BtnDirectory.setText("Change Directory");
+                        pathText.setText(lh.getDataSend().getPath());
 
-                } else {
-                    BtnDirectory.setText("Choose Directory");
-                    pathText.setText("path");
-                    updateTableLog(null);
+                        updateTableLog(lh.getDataSend().getFolderInfo());
+
+                    } else {
+                        BtnDirectory.setText("Choose Directory");
+                        pathText.setText("path");
+                        updateTableLog(null);
+
+                    }
 
                 }
-
             }
         }
+
 
     }//GEN-LAST:event_jList1ValueChanged
 

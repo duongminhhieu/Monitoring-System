@@ -54,6 +54,7 @@ public class ClientThread extends Thread {
     }
 
     public static void sendDataToServer() throws IOException {
+        System.out.println(data.getRoots().length);
         out = new ObjectOutputStream(ConnectSocket.socket.getOutputStream());
         out.writeObject(ClientThread.data);
         out.flush();
@@ -66,6 +67,7 @@ public class ClientThread extends Thread {
         try {
 
             while (true) {
+                if(ConnectSocket.socket.isClosed()) break;
                 in = new ObjectInputStream(ConnectSocket.socket.getInputStream());
                 DataSend dataSend = (DataSend) in.readObject();
                 this.data = dataSend;

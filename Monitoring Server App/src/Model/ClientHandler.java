@@ -74,18 +74,15 @@ public class ClientHandler implements Runnable {
             try {
 
                 while (true) {
-                    
+
                     in = new ObjectInputStream(client.getInputStream());
-                    
+
                     DataSend data = (DataSend) in.readObject();
 
-                    // khoi tao
-                    if (data.getStatus() == 0) {
-                        dataSend = data;
-                        if (data.getFolderInfo() != null) {
-                            System.out.println(data.getFolderInfo().size());
-                            DashboardForm.updateTableLog(data.getFolderInfo());
-                        }
+                    dataSend = data;
+                    if (data.getFolderInfo() != null) {
+                        System.out.println(data.getFolderInfo().size());
+                        DashboardForm.updateTableLog(data.getFolderInfo());
                     }
 
                 }
@@ -93,27 +90,12 @@ public class ClientHandler implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
 
-                try {
-                    in.close();
-                    out.close();
-                    client.close();
-                    System.out.println("Client-" + client.getPort() + " disconnected!");
-
-                    // xoa client trong list giao dien
-                    for (int i = 0; i < DashboardForm.listClient.size(); i++) {
-                        if (DashboardForm.listClient.get(i).equals("Client-" + client.getPort())) {
-                            DashboardForm.listClient.remove(i);
-                            break;
-                        }
-                    }
-                    DashboardForm.updateListClients();
-                    DashboardForm.updateTableLog(null);
-                    JOptionPane.showMessageDialog(null, "Client-" + client.getPort() + " disconnected!", "Client ngắt kết nối", JOptionPane.WARNING_MESSAGE);
-                    ConnectSocket.removeClient(this);
-
-                } catch (IOException ex) {
-                    Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                //client.close();
+                System.out.println("Client-" + client.getPort() + " disconnected!");
+                ConnectSocket.removeClient(this);
+                DashboardForm.updateListClients();
+                DashboardForm.updateTableLog(null);
+                JOptionPane.showMessageDialog(null, "Client-" + client.getPort() + " disconnected!", "Client ngắt kết nối", JOptionPane.WARNING_MESSAGE);
 
             }
 

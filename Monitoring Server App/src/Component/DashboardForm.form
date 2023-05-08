@@ -103,6 +103,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="pathChooseDirectory">
           <Properties>
+            <Property name="editable" type="boolean" value="false"/>
             <Property name="text" type="java.lang.String" value="path"/>
           </Properties>
         </Component>
@@ -362,22 +363,22 @@
                   <Editor/>
                   <Renderer/>
                 </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="160" resizable="true">
+                <Column maxWidth="-1" minWidth="160" prefWidth="160" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
                 </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="200" resizable="true">
+                <Column maxWidth="-1" minWidth="80" prefWidth="80" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
                 </Column>
-                <Column maxWidth="-1" minWidth="250" prefWidth="-1" resizable="true">
+                <Column maxWidth="-1" minWidth="250" prefWidth="250" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>
                 </Column>
-                <Column maxWidth="-1" minWidth="280" prefWidth="-1" resizable="true">
+                <Column maxWidth="-1" minWidth="300" prefWidth="300" resizable="true">
                   <Title/>
                   <Editor/>
                   <Renderer/>

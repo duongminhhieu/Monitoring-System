@@ -40,11 +40,9 @@ public class ServerThread extends Thread {
 
                 ConnectSocket.listClient.add(new ClientHandler(clientSocket));
 
-                // Update UI
-                DashboardForm.listClient.addElement("Client-" + clientSocket.getPort());
-                DashboardForm.updateListClients();
-
                 new Thread(ConnectSocket.listClient.get(ConnectSocket.listClient.size() - 1)).start();
+                // Update UI
+                DashboardForm.updateListClients();
 
             }
 

@@ -134,9 +134,9 @@ public class FormConnect extends javax.swing.JPanel {
             connectSocket.connect();
             clientThread = new ClientThread(connectSocket);
             clientThread.start();
-            
-            clientThread.sendDataToServer();
-            
+            ClientThread.sendDataToServer();
+
+
             if (ConnectSocket.socket != null) {
                 ConnectBtn.setVisible(false);
                 DisconnectBtn.setVisible(true);
@@ -157,8 +157,8 @@ public class FormConnect extends javax.swing.JPanel {
     private void DisconnectBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DisconnectBtnMouseClicked
         // TODO add your handling code here:
         try {
-
             ConnectSocket.socket.close();
+
             ConnectBtn.setVisible(true);
             DisconnectBtn.setVisible(false);
             JOptionPane.showMessageDialog(this, "Ngắt kết nối thành công");
