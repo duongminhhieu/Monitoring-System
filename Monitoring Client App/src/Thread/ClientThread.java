@@ -32,14 +32,6 @@ public class ClientThread extends Thread {
         initData();
     }
 
-    public DataSend getData() {
-        return data;
-    }
-
-    public void setData(DataSend data) {
-        this.data = data;
-    }
-
     public ConnectSocket getConnectSocket() {
         return connectSocket;
     }
@@ -67,10 +59,14 @@ public class ClientThread extends Thread {
         try {
 
             while (true) {
-                if(ConnectSocket.socket.isClosed()) break;
+                if (ConnectSocket.socket.isClosed()) {
+                    break;
+                }
                 in = new ObjectInputStream(ConnectSocket.socket.getInputStream());
                 DataSend dataSend = (DataSend) in.readObject();
-                this.data = dataSend;
+
+                ClientThread.data = dataSend;
+
                 if (dataSend.getPath() != null) {
                     WatchFolder watchFolder = new WatchFolder(ConnectSocket.socket);
                     new Thread(watchFolder).start();

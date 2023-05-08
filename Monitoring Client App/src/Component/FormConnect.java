@@ -52,6 +52,8 @@ public class FormConnect extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         portClientText = new javax.swing.JTextField();
         portServerText = new javax.swing.JTextField();
+        ipServerText = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
 
         ConnectBtn.setText("Connect");
         ConnectBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -62,7 +64,7 @@ public class FormConnect extends javax.swing.JPanel {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Giám sát thư mục ");
+        jLabel1.setText("Monitoring Folder");
 
         DisconnectBtn.setText("Disconnect");
         DisconnectBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -80,6 +82,15 @@ public class FormConnect extends javax.swing.JPanel {
 
         portServerText.setEditable(false);
         portServerText.setText("Port Server");
+
+        ipServerText.setText("localhost");
+        ipServerText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ipServerTextActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("IP Server");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -99,12 +110,14 @@ public class FormConnect extends javax.swing.JPanel {
                         .addGap(85, 85, 85)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel2))
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(portClientText)
-                            .addComponent(portServerText, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE))))
-                .addContainerGap(77, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ipServerText, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                            .addComponent(portServerText)
+                            .addComponent(portClientText))))
+                .addGap(60, 60, 60))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -119,7 +132,11 @@ public class FormConnect extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(portServerText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(ipServerText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(DisconnectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ConnectBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -130,12 +147,11 @@ public class FormConnect extends javax.swing.JPanel {
     private void ConnectBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ConnectBtnMouseClicked
         // TODO add your handling code here:
         try {
-            connectSocket = new ConnectSocket("192.168.44.1", 8080);
+            connectSocket = new ConnectSocket(ipServerText.getText(), 8080);
             connectSocket.connect();
             clientThread = new ClientThread(connectSocket);
             clientThread.start();
             ClientThread.sendDataToServer();
-
 
             if (ConnectSocket.socket != null) {
                 ConnectBtn.setVisible(false);
@@ -144,13 +160,13 @@ public class FormConnect extends javax.swing.JPanel {
                 portServerText.setText("8080");
                 JOptionPane.showMessageDialog(this, "Kết nối thành công");
             } else {
-                JOptionPane.showMessageDialog(this, "Kết nối không thành công !\nCó thể Server chưa được bật !!",
-                        "ERROR", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Kiểm tra lại IPServer và Server đã được bật !!",
+                        "Kết nối không thành công !", JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Kết nối không thành công !\nCó thể Server chưa được bật !!",
-                    "ERROR", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Kiểm tra lại IPServer và \nCó thể Server chưa được bật !!",
+                    "Kết nối không thành công !", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_ConnectBtnMouseClicked
 
@@ -171,13 +187,19 @@ public class FormConnect extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_DisconnectBtnMouseClicked
 
+    private void ipServerTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ipServerTextActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ipServerTextActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ConnectBtn;
     private javax.swing.JButton DisconnectBtn;
+    private javax.swing.JTextField ipServerText;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JTextField portClientText;
     private javax.swing.JTextField portServerText;
     // End of variables declaration//GEN-END:variables

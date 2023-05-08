@@ -26,7 +26,6 @@ public class DataSend implements Serializable{
         this.folderInfo = folderInfo;
     }
 
-    
     public File[] getRoots() {
         return roots;   
     }

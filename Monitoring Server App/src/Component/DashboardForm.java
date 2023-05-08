@@ -7,6 +7,7 @@ package Component;
 import Model.ClientHandler;
 import Thread.ServerThread;
 import Model.ConnectSocket;
+import Model.DataSend;
 import Model.FolderInfo;
 import java.io.File;
 import java.io.IOException;
@@ -412,8 +413,8 @@ public class DashboardForm extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jList1ValueChanged
 
-    public void updateTreeDirectory(File[] lstRoot) {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Client Computer");
+    public void updateTreeDirectory(File[] lstRoot) throws IOException {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Client-" + currentClientHandler.getClient().getPort() + " Computer");
 
         for (int i = 0; i < lstRoot.length; i++) {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(lstRoot[i]);
@@ -429,8 +430,10 @@ public class DashboardForm extends javax.swing.JPanel {
         diaLogDirectory.setVisible(true);
     }
 
-    private void addChildren(DefaultMutableTreeNode node, File file) {
+    private void addChildren(DefaultMutableTreeNode node, File file) throws IOException {
+
         File[] files = file.listFiles();
+
         if (files == null) {
             return;
         }
@@ -464,7 +467,12 @@ public class DashboardForm extends javax.swing.JPanel {
                 if (lh.getClient().getPort() == Integer.parseInt(portString)) {
                     currentClientHandler = lh;
                     roots = lh.getDataSend().getRoots();
-                    updateTreeDirectory(lh.getDataSend().getRoots());
+                    try {
+                        updateTreeDirectory(lh.getDataSend().getRoots());
+                    } catch (IOException ex) {
+                        Logger.getLogger(DashboardForm.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    break;
                 }
             }
 
@@ -481,10 +489,12 @@ public class DashboardForm extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jTree1ValueChanged
 
-    private File SearchFile(File file, String search) {
+    // duyet toan bo file de tim file co ten can tim
+    private File SearchFile(File file, String search) throws IOException {
 
         File[] files = file.listFiles();
 
+        //File[] files = file.listFiles();
         if (files != null) {
             for (File f : files) {
                 if (f.isDirectory() && f.getAbsolutePath().equals(search)) {
@@ -512,10 +522,18 @@ public class DashboardForm extends javax.swing.JPanel {
             File file = null;
             for (File root : roots) {
                 if (nodePathString.contains(root.getAbsolutePath())) {
-                    file = SearchFile(root, nodePathString);
+                    try {
+                        file = SearchFile(root, nodePathString);
+                    } catch (IOException ex) {
+                        Logger.getLogger(DashboardForm.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
-            addChildren(node, file);
+            try {
+                addChildren(node, file);
+            } catch (IOException ex) {
+                Logger.getLogger(DashboardForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         }
 
