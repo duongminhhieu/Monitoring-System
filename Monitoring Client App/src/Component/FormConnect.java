@@ -130,7 +130,7 @@ public class FormConnect extends javax.swing.JPanel {
     private void ConnectBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ConnectBtnMouseClicked
         // TODO add your handling code here:
         try {
-            connectSocket = new ConnectSocket("localhost", 8080);
+            connectSocket = new ConnectSocket("192.168.44.1", 8080);
             connectSocket.connect();
             clientThread = new ClientThread(connectSocket);
             clientThread.start();
