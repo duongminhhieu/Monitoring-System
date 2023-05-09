@@ -170,6 +170,12 @@ public class FormConnect extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_ConnectBtnMouseClicked
 
+    public static void updateUIServerDisconnect() {
+        ConnectBtn.setVisible(true);
+        DisconnectBtn.setVisible(false);
+        portClientText.setText("Port Client");
+    }
+
     private void DisconnectBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DisconnectBtnMouseClicked
         // TODO add your handling code here:
         try {
@@ -193,14 +199,14 @@ public class FormConnect extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton ConnectBtn;
-    private javax.swing.JButton DisconnectBtn;
+    private static javax.swing.JButton ConnectBtn;
+    private static javax.swing.JButton DisconnectBtn;
     private javax.swing.JTextField ipServerText;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField portClientText;
+    private static javax.swing.JTextField portClientText;
     private javax.swing.JTextField portServerText;
     // End of variables declaration//GEN-END:variables
 }

@@ -80,6 +80,12 @@ public class ClientHandler implements Runnable {
                     DataSend data = (DataSend) in.readObject();
 
                     dataSend = data;
+
+                    if (data.getLstFilesOfNode() != null) {
+                        System.out.println("||||" + data.getLstFilesOfNode().length);
+                        DashboardForm.addChildrenNodeJtree(data.getDirectoryNode(), data.getLstFilesOfNode());
+                    }
+
                     if (data.getFolderInfo() != null) {
                         System.out.println(data.getFolderInfo().size());
                         DashboardForm.updateTableLog(data.getFolderInfo());

@@ -6,18 +6,22 @@ package Model;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
  * @author ASUS
  */
-public class DataSend implements Serializable{
-    
+public class DataSend implements Serializable {
+
     private File[] roots;
     private String path;
     private int status; // status = 0 : khoi tao ; status = 1: thay doi 
     private List<FolderInfo> folderInfo;
+    private File[] lstFilesOfNode;
+    private DefaultMutableTreeNode directoryNode;
 
     public DataSend(File[] roots, String path, int status, List<FolderInfo> folderInfo) {
         this.roots = roots;
@@ -26,10 +30,26 @@ public class DataSend implements Serializable{
         this.folderInfo = folderInfo;
     }
 
-    
-    public File[] getRoots() {
-        return roots;   
+    public File[] getLstFilesOfNode() {
+        return lstFilesOfNode;
     }
+
+    public void setLstFilesOfNode(File[] lstFilesOfNode) {
+        this.lstFilesOfNode = Arrays.copyOf(lstFilesOfNode, lstFilesOfNode.length) ;
+    }
+
+    public DefaultMutableTreeNode getDirectoryNode() {
+        return directoryNode;
+    }
+
+    public void setDirectoryNode(DefaultMutableTreeNode directoryNode) {
+        this.directoryNode = directoryNode;
+    }
+
+    public File[] getRoots() {
+        return roots;
+    }
+
     public void setRoots(File[] roots) {
         this.roots = roots;
     }
@@ -58,6 +78,4 @@ public class DataSend implements Serializable{
         this.folderInfo = folderInfo;
     }
 
-
-    
 }

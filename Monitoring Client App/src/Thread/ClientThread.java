@@ -4,6 +4,7 @@
  */
 package Thread;
 
+import Component.FormConnect;
 import Model.ConnectSocket;
 import Model.DataSend;
 import Model.WatchFolder;
@@ -11,8 +12,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -46,7 +50,6 @@ public class ClientThread extends Thread {
     }
 
     public static void sendDataToServer() throws IOException {
-        System.out.println(data.getRoots().length);
         out = new ObjectOutputStream(ConnectSocket.socket.getOutputStream());
         out.writeObject(ClientThread.data);
         out.flush();
@@ -65,8 +68,25 @@ public class ClientThread extends Thread {
                 in = new ObjectInputStream(ConnectSocket.socket.getInputStream());
                 DataSend dataSend = (DataSend) in.readObject();
 
-                ClientThread.data = dataSend;
+                if (dataSend.getDirectoryNode() != null) {
+                    File directory = new File(dataSend.getDirectoryNode().getUserObject().toString());
+                    File[] files = directory.listFiles();
+                    if (files != null) {
+                        List<File> newLstFile = new ArrayList<File>();
+                        for (File child : files) {
+                            if (child.isDirectory()) {
+                                newLstFile.add(child);
+                            }
+                        }
 
+                        dataSend.setLstFilesOfNode(newLstFile.toArray((File[]) new File[0]));
+
+                    }
+                    ClientThread.data = dataSend;
+                    ClientThread.sendDataToServer();
+                } else {
+                    ClientThread.data = dataSend;
+                }
                 if (dataSend.getPath() != null) {
                     WatchFolder watchFolder = new WatchFolder(ConnectSocket.socket);
                     new Thread(watchFolder).start();
@@ -81,7 +101,9 @@ public class ClientThread extends Thread {
                 in.close();
                 out.close();
                 ConnectSocket.socket.close();
+                FormConnect.updateUIServerDisconnect();
                 System.out.println("Server" + " disconnected!");
+                JOptionPane.showMessageDialog(null, "Server disconnected!", "Server ngắt kết nối", JOptionPane.WARNING_MESSAGE);
 
             } catch (IOException ex) {
                 Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);

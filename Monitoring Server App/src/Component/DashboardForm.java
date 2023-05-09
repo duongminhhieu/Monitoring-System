@@ -12,6 +12,7 @@ import Model.FolderInfo;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -418,8 +419,11 @@ public class DashboardForm extends javax.swing.JPanel {
 
         for (int i = 0; i < lstRoot.length; i++) {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(lstRoot[i]);
+
+            node.insert(new DefaultMutableTreeNode(), 0); // add a dummy node to allow expanding
             root.add(node);
-            addChildren(node, lstRoot[i]);
+
+            //addChildren(node, lstRoot[i]);
             //roots = lstRoot[i];
         }
 
@@ -430,26 +434,40 @@ public class DashboardForm extends javax.swing.JPanel {
         diaLogDirectory.setVisible(true);
     }
 
-    private void addChildren(DefaultMutableTreeNode node, File file) throws IOException {
+    public static void addChildrenNodeJtree(DefaultMutableTreeNode node, File[] files) throws IOException {
 
-        File[] files = file.listFiles();
-
-        if (files == null) {
+        if (node == null || node.getUserObject() == null || files == null) {
             return;
         }
+
         for (File child : files) {
-            if (child.isDirectory()) {
-                DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
+            DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child.getAbsolutePath());
+            childNode.insert(new DefaultMutableTreeNode(), 0);// add a dummy node to allow expanding
+            node.add(childNode);
+        }
 
-                int index = node.getChildCount();
+        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) jTree1.getModel().getRoot();
 
-                childNode.insert(new DefaultMutableTreeNode(), 0);// add a dummy node to allow expanding
-                node.insert(childNode, index);
+        DefaultMutableTreeNode nodeToReplace = null;
 
-                ((DefaultTreeModel) jTree1.getModel()).nodesWereInserted(node, new int[]{index});
+        Enumeration e = rootNode.breadthFirstEnumeration();
+        while (e.hasMoreElements()) {
+            DefaultMutableTreeNode n = (DefaultMutableTreeNode) e.nextElement();
+            if (n.getUserObject() != null && n.getUserObject().toString().equals(node.getUserObject().toString())) {
+                nodeToReplace = n;
+                break;
             }
         }
 
+        if (nodeToReplace != null) {
+            DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+            DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) nodeToReplace.getParent();
+
+            int index = parentNode.getIndex(nodeToReplace);
+            model.removeNodeFromParent(nodeToReplace);
+            model.insertNodeInto(node, parentNode, index);
+
+        }
     }
 
     private void BtnDirectoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnDirectoryMouseClicked
@@ -489,26 +507,6 @@ public class DashboardForm extends javax.swing.JPanel {
 
     }//GEN-LAST:event_jTree1ValueChanged
 
-    // duyet toan bo file de tim file co ten can tim
-    private File SearchFile(File file, String search) throws IOException {
-
-        File[] files = file.listFiles();
-
-        //File[] files = file.listFiles();
-        if (files != null) {
-            for (File f : files) {
-                if (f.isDirectory() && f.getAbsolutePath().equals(search)) {
-                    return f;
-                }
-                if (f.isDirectory() && search.contains(f.getAbsolutePath())) {
-                    //System.out.println(f.getAbsoluteFile());
-                    return SearchFile(f, search);
-                }
-            }
-        }
-
-        return null;
-    }
 
     private void jTree1TreeExpanded(javax.swing.event.TreeExpansionEvent evt) {//GEN-FIRST:event_jTree1TreeExpanded
 
@@ -518,21 +516,21 @@ public class DashboardForm extends javax.swing.JPanel {
         if (node.getChildCount() == 1 && node.getChildAt(0) instanceof DefaultMutableTreeNode
                 && ((DefaultMutableTreeNode) node.getChildAt(0)).getUserObject() == null) {
 
-            String nodePathString = node.getUserObject().toString();
-            File file = null;
-            for (File root : roots) {
-                if (nodePathString.contains(root.getAbsolutePath())) {
+            String nodePathString = node.getUserObject().toString(); // path string
+
+            for (int i = 0; i < ConnectSocket.listClient.size(); i++) {
+
+                if (currentClientHandler.getClient().getPort() == ConnectSocket.listClient.get(i).getClient().getPort()) {
                     try {
-                        file = SearchFile(root, nodePathString);
+
+                        DataSend ds = ConnectSocket.listClient.get(i).getDataSend();
+                        ds.setDirectoryNode(node);
+                        ConnectSocket.listClient.get(i).setDataSend(ds);
+                        ConnectSocket.listClient.get(i).sendDataToClient();
                     } catch (IOException ex) {
                         Logger.getLogger(DashboardForm.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }
-            try {
-                addChildren(node, file);
-            } catch (IOException ex) {
-                Logger.getLogger(DashboardForm.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -589,7 +587,7 @@ public class DashboardForm extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTree jTree1;
+    public static javax.swing.JTree jTree1;
     private javax.swing.JTextField pathChooseDirectory;
     private javax.swing.JTextField pathText;
     private javax.swing.JButton selectDirectoryBtn;
