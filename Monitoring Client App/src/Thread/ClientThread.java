@@ -62,9 +62,7 @@ public class ClientThread extends Thread {
         try {
 
             while (true) {
-                if (ConnectSocket.socket.isClosed()) {
-                    break;
-                }
+
                 in = new ObjectInputStream(ConnectSocket.socket.getInputStream());
                 DataSend dataSend = (DataSend) in.readObject();
 
@@ -98,12 +96,16 @@ public class ClientThread extends Thread {
             e.printStackTrace();
 
             try {
-                in.close();
-                out.close();
-                ConnectSocket.socket.close();
-                FormConnect.updateUIServerDisconnect();
-                System.out.println("Server" + " disconnected!");
-                JOptionPane.showMessageDialog(null, "Server disconnected!", "Server ngắt kết nối", JOptionPane.WARNING_MESSAGE);
+
+                if (!ConnectSocket.socket.isClosed()) {
+                    in.close();
+                    out.close();
+                    ConnectSocket.socket.close();
+                    FormConnect.updateUIServerDisconnect();
+                    System.out.println("Server" + " disconnected!");
+                    JOptionPane.showMessageDialog(null, "Server disconnected!", "Server ngắt kết nối", JOptionPane.WARNING_MESSAGE);
+
+                }
 
             } catch (IOException ex) {
                 Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);

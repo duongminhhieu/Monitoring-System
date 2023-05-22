@@ -180,7 +180,7 @@ public class FormConnect extends javax.swing.JPanel {
         // TODO add your handling code here:
         try {
             ConnectSocket.socket.close();
-
+            
             ConnectBtn.setVisible(true);
             DisconnectBtn.setVisible(false);
             JOptionPane.showMessageDialog(this, "Ngắt kết nối thành công");
