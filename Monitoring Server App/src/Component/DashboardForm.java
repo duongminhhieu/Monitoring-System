@@ -4,7 +4,7 @@
  */
 package Component;
 
-import Model.ClientHandler;
+import Thread.ClientHandler;
 import Thread.ServerThread;
 import Model.ConnectSocket;
 import Model.DataSend;

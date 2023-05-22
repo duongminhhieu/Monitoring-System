@@ -2,15 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Thread;
 
 import Component.DashboardForm;
+import Model.ConnectSocket;
+import Model.DataSend;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -82,12 +82,10 @@ public class ClientHandler implements Runnable {
                     dataSend = data;
 
                     if (data.getLstFilesOfNode() != null) {
-                        System.out.println("||||" + data.getLstFilesOfNode().length);
                         DashboardForm.addChildrenNodeJtree(data.getDirectoryNode(), data.getLstFilesOfNode());
                     }
 
                     if (data.getFolderInfo() != null) {
-                        System.out.println(data.getFolderInfo().size());
                         DashboardForm.updateTableLog(data.getFolderInfo());
                     }
 

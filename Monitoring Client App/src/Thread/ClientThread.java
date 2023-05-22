@@ -7,7 +7,6 @@ package Thread;
 import Component.FormConnect;
 import Model.ConnectSocket;
 import Model.DataSend;
-import Model.WatchFolder;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;

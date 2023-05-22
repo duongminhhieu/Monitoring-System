@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Thread;
 
+import Model.FolderInfo;
 import Thread.ClientThread;
 import java.io.IOException;
 import java.net.Socket;
@@ -14,7 +15,6 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class WatchFolder implements Runnable {
 
-    public static WatchService watchService;
+    public WatchService watchService;
     private Socket s;
 
     public WatchFolder(Socket s) {
